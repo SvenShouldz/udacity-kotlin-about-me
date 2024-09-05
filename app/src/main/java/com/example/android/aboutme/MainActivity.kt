@@ -24,6 +24,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import com.example.android.aboutme.databinding.ActivityMainBinding
 
 
 /**
@@ -38,19 +40,25 @@ import androidx.appcompat.app.AppCompatActivity
  */
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
+    private val myName: MyName = MyName("Sven Shouldz")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        findViewById<Button>(R.id.button).setOnClickListener{
+        //setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.button.setOnClickListener{
             addNickname(it)
         }
+        binding.myName = myName
     }
 
     private fun addNickname(view: View?) {
-        val nicknameEdit = findViewById<EditText>(R.id.nickname_edit)
-        val nicknameText = findViewById<TextView>(R.id.nickname_text)
+        val nicknameEdit = binding.nicknameEdit
+        val nicknameText = binding.nicknameText
 
-        nicknameText.text = nicknameEdit.text
+        myName.nickname = nicknameEdit.text.toString()
 
         view?.visibility = View.GONE
         nicknameEdit.visibility = View.GONE
@@ -59,5 +67,6 @@ class MainActivity : AppCompatActivity() {
         // Hide the keyboard.
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
+        binding.invalidateAll()
     }
 }
